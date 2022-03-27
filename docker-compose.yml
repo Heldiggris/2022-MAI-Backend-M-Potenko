@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  web:
+    build: ./
+    command: python3.8 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/home/heldiggris/Labs/SE/2022-MAI-Backend-M-Potenko/spaceproj/
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+    ports:
+      - "0.0.0.0:8000:8000"
+    expose:
+     - '8000'
+    links:
+       - db:db
+    networks:
+       - djangonetwork
+  db:
+    image: postgres:14.2-alpine
+    expose:
+      - '8000'
+    volumes:
+      - postgres_data:/var/lib/postgresql/14/main
+        #/var/lib/postgresql/data/
+
+    networks:
+        - djangonetwork
+
+    environment:
+      - POSTGRES_USER=seadmin
+      - POSTGRES_PASSWORD=user1234
+      - POSTGRES_DB=sebase
+      - PGDATA=/var/lib/postgresql/14/main
+
+  nginx:
+    build: ./nginx
+    volumes:
+      # - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./public:/home/heldiggris/Labs/SE/2022-MAI-Backend-M-Potenko/public
+    ports:
+      - "80:80"
+    expose:
+      - '80'
+    depends_on:
+      - web
+
+networks:
+    djangonetwork:
+        driver: bridge
+
+
+
+volumes:
+  postgres_data:

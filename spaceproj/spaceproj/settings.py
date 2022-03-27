@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import platform, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-f2n-0rk=n&b3t(^kta7ph-dtemi#ji2#jv)lc9ys#jak=-w@9_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -80,13 +81,19 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
     'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'sebase',
-    'USER': 'seadmin',
-    'PASSWORD': 'user1234',
-    'HOST': '127.0.0.1',
-    'PORT': '5432',    
-    }
+    # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    # 'NAME': 'sebase',
+    # 'USER': 'seadmin',
+    # 'PASSWORD': 'user1234',
+    # 'HOST': '127.0.0.1',
+    # 'PORT': '5432',
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql_psycopg2"),
+        "NAME": os.environ.get("SQL_DATABASE", "sebase"),
+        "USER": os.environ.get("SQL_USER", "seadmin"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "user1234"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"), 
+    } 
 }
 
 
