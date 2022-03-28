@@ -1,9 +1,9 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
-class User(models.Model):
-    pass
+class User(AbstractUser):
+    notes = models.ManyToManyField('Planet')
 
 class Category(models.Model):
     name = models.CharField(max_length=32, verbose_name="Категория")
@@ -23,10 +23,11 @@ class Atmosphere(models.Model):
 
 class StarSystem(models.Model):
     name = models.CharField(max_length=32, verbose_name="Звёздная система")
-
+    def __str__(self):
+        return f"{self.name}"
 
 class Planet(models.Model):
-    name = models.CharField(max_length=32, verbose_name="Планета")
+    name = models.CharField(max_length=32, unique=True, verbose_name="Планета")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null = True, blank = True) # on_delete=models.CASCADE
                                                 # related_name="name" 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, blank = True)
@@ -38,12 +39,8 @@ class Planet(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-
-User.login = models.CharField(max_length=32, null=False, unique=True)
-User.name = models.CharField(max_length=32)
-User.notes = models.ManyToManyField(Planet)
-
-
+# User.login = models.CharField(max_length=32, null=False, unique=True)
+# User.name = models.CharField(max_length=32)
 
 # planet = Planet()
 # planet.name = "Earth"
